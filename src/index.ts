@@ -111,8 +111,8 @@ app.post("/api/register", async (req, res) => {
        app.get("/api/orders", async (req, res) => {
         try {
           const orders = await stripe.issuing.transactions.list();
-      
           res.json(orders.data);
+          console.log(req.body);
         } catch (error) {
           console.error("Error retriveing orders:", error);
           res.status(500).json({ error: 'Server error' });
