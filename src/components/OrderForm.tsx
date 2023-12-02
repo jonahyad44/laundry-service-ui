@@ -3,7 +3,6 @@ import { Button, Stack, TextField, Grid, Typography, Select, SelectChangeEvent, 
 import { ChangeEvent, FormEvent, useState } from "react";
 import { MyThemeProvider } from "../themes/themeprovider";
 import { useNavigate } from "react-router-dom";
-import { backendUrl } from "../config";
 
 export default function OrderForm() {
 
@@ -31,7 +30,7 @@ export default function OrderForm() {
         e.preventDefault();
         setLoading(true);
         console.log(formValues);
-        await fetch(`${backendUrl}/form/submitorder`, {
+        await fetch("/api/submitorder", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,9 +40,6 @@ export default function OrderForm() {
         .then((response) => {
             if(response.ok) {
                 console.log("Form successful!");
-
-
-
             } else {
                 console.log("Form failed.");
             }

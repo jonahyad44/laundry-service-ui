@@ -1,48 +1,38 @@
-import { useState, useEffect } from 'react';
-import { backendUrl } from '../config';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface Order {
+  id: string;
+  amount: number;
+}
 
 export default function Orders() {
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState<Order[]>([]);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-          try {
-            const response = await fetch(`${backendUrl}/api/orders`);
-            const data = await response.json();
-            setOrders(data);
-          } catch (error) {
-            console.error('Error fetching orders:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        fetchOrders();
-      }, []); // Empty dependency array ensures the effect runs only once on mount
-    
-      if (loading) {
-        return <p>Loading orders...</p>;
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get<Order[]>("/api/orders");
+        setOrders(response.data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
       }
-    
+    };
 
-    return(
-        <>
-        <div>
-      <h2>Your Orders</h2>
-      {orders.length === 0 ? (
-        <p>No orders found.</p>
-      ) : (
-        <ul>
-          {orders.map((order) => (
-            <li key={order.id}>
-              Order #{order.id} - Total: ${order.amount / 100} {/* assuming amount is in cents */}
-            </li>
-          ))}
-        </ul>
-      )}
+    fetchOrders();
+  }, []);
+  
+  return (
+    <>
+    <div>
+      <h2>Orders</h2>
+      <ul>
+        {orders.map((order) => (
+          <li key={order.id}>{order.amount}</li>
+        ))}
+      </ul>
     </div>
-        </>
-    )
+
+    </>
+  )
 }
-    

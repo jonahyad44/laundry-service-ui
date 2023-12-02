@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import { Link } from "react-router-dom";
 import MyImage from '../pictures/pexels-photo-2927523.jpeg';
 import MyImage2 from "../pictures/laundry-ecommerce-instructions.png";
-import { backendUrl } from "../config";
 
 export default function Admin() {
     const navigate = useNavigate();
@@ -16,7 +15,7 @@ export default function Admin() {
     useEffect(() => {
         async function authenticate() {
             const token = localStorage.getItem("token");
-            const response = await fetch(`${backendUrl}/users/checkToken`, {
+            const response = await fetch("/api/checkToken", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

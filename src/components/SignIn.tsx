@@ -6,12 +6,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import Stack from '@mui/material/Stack';
-import { backendUrl } from "../config";
+
 
 export default function SignIn() {
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
 
@@ -26,22 +26,35 @@ export default function SignIn() {
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await fetch(`${backendUrl}/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    if (response.status !== 201) {
-      alert("Incorrect credentials");
-    } else {
-      const token = await response.json();
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", username);
-      navigate("/AdminHome");
+
+    const formData = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Login successful");
+        navigate("/Admin");
+      } else {
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
     }
-    }
+    
+  }
+
+  
+
 
     return (
         <>
@@ -113,11 +126,10 @@ export default function SignIn() {
                                           gap: '8px',
                                           flex: 100,
                                           background: '#FFFFFF',
-                                        }}
-                                          onChange={(e) => {
-                                            setUsername(e.target.value);
-                                          }}
-                                        ></TextField>
+                                        }} 
+                                        onChange={(e) => {
+                                          setUsername(e.target.value);
+                                        }}></TextField>
                             </CardContent>
                             </Stack>
 
@@ -184,11 +196,9 @@ export default function SignIn() {
                                           </IconButton>
                                         </InputAdornment>
                                       ),
-                                    }}
-                                    onChange={(e) => {
+                                    }} onChange={(e) => {
                                       setPassword(e.target.value);
-                                    }}
-                                    ></TextField>
+                                    }}></TextField>
                                     <Link to={"/SignUp"}>
                                       <Typography>
                                         Don't Have An Account? Sign Up Here!
@@ -220,9 +230,6 @@ export default function SignIn() {
                             </Stack>
                                 
                     </Card>
-                    
-                  
-
             </form>
         </>
     )

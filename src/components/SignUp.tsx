@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import Stack from "@mui/material/Stack";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
@@ -7,15 +7,13 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import { Link, useNavigate } from "react-router-dom";
-import { backendUrl } from "../config";
+
 
 export default function SignUp() {
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
@@ -24,23 +22,35 @@ export default function SignUp() {
     event.preventDefault();
   };
 
-  const handleSignUp = async (event: React.FormEvent) => {
+  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await fetch(`${backendUrl}/users/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    if (response.status === 201) {
-      alert("Account created");
-      navigate("/SignIn");
-    } else {
-      alert("Error creating account");
+
+    const formData = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Registration successful");
+        navigate("/SignIn");
+      } else {
+        console.error("Registration failed");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
     }
     
   };
+
 
   return (
     <>
@@ -112,11 +122,9 @@ export default function SignUp() {
                                           gap: '8px',
                                           flex: 100,
                                           background: "#FFFFFF",
-                                        }}
-                                          onChange={(e) => {
-                                            setUsername(e.target.value);
-                                          }}
-                                        ></TextField>
+                                        }} onChange={(e) => {
+                                          setUsername(e.target.value);
+                                        }}></TextField>
                             </CardContent>
                             </Stack>
 
@@ -156,6 +164,7 @@ export default function SignUp() {
                                     <TextField
                                     fullWidth
                                     required
+                                    placeholder="Password"
                                     sx={{
                                       gap: '8px',
                                       fontWeight: 400,
@@ -183,11 +192,9 @@ export default function SignUp() {
                                           </IconButton>
                                         </InputAdornment>
                                       ),
-                                    }}
-                                    onChange={(e) => {
+                                    }} onChange={(e) => {
                                       setPassword(e.target.value);
-                                    }}
-                                    ></TextField>
+                                    }}></TextField>
                                     <Link to={"/SignIn"}>
                                       <Typography>
                                         Already Have An Account? Sign In Here!

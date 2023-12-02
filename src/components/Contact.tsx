@@ -5,7 +5,6 @@ import Textarea from "@mui/joy/Textarea";
 import Stack from '@mui/material/Stack';
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
-import { backendUrl } from "../config";
 
 export default function Contact() {
     const [name, setName] = useState("");
@@ -15,7 +14,7 @@ export default function Contact() {
 
     const handleEmail = async (event: React.FormEvent) => {
         event.preventDefault();
-        const response = await fetch(`${backendUrl}/mail/contactform`, {
+        const response = await fetch("/api/contactform", {
           method: "POST",
           headers: {"Content-Type": "application/json" },
           body: JSON.stringify({name, email, message}),
