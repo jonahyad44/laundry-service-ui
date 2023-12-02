@@ -24,7 +24,8 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
 app.use(cookieParser());
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}))
 
 app.post("/api/register", async (req, res) => {
   try {
@@ -38,7 +39,6 @@ app.post("/api/register", async (req, res) => {
         password: hashedPass,
       },
     });
-    console.log("Prisma completed");
     res.status(201).send();
   } catch {
     res.status(500).send();
@@ -47,21 +47,20 @@ app.post("/api/register", async (req, res) => {
 
   app.post("/api/login", async (req: Request, res: Response) => {
     const { username, password } = req.body;
+  const user = await prisma.admin.findFirst({
+    where: { username: username },
+  });
+  if (!user) {
+    return res.status(400).send("User not found");
+  }
 
-    const user = await prisma.admin.findFirst({
-        where: { username: username },
-      });
-      if (!user) {
-        return res.status(400).send("Cannot find user");
-      }
-      if (await bcrypt.compare(user.password, password)) {
-        res.status(403).send("Incorrect Password");
-      } else {
-        const token: string = jwt.sign(user, process.env.JWT_KEY, {
-          expiresIn: "1h",
-        });
-        res.status(201).send();
-      }
+  const correct = await bcrypt.compare(password, user.password);
+  if (!correct) {
+    res.sendStatus(403);
+  } else {
+    const token: string = jwt.sign(username, env.JWT_SECRET_KEY);
+    res.status(201).json(token);
+  }
   });
 
   app.post("/api/checkToken", (req: Request, res: Response) => {
@@ -80,14 +79,15 @@ app.post("/api/register", async (req, res) => {
   });
 
       app.post("/api/submitorder", async (req: Request, res: Response) => {
-        try {     
-          // Respond to the client (you might send a success or error response)
-          res.status(200).json({ message: "Form submission successful" });
-        } catch (error) {
-          console.error("Error during form submission:", error);
-          res.status(500).json({ message: "Internal server error" });
-        }
-      });
+        try {   
+          const formData = req.body.formValues;
+          console.log(formData);
+      res.status(200).json({ message: "Form submission successful" });
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
       app.post("/api/contactform", async (req, res) => {
         const {name, email, message} = req.body;
