@@ -29,6 +29,11 @@ const theme = createTheme({
             fontWeight: 700,
             fontSize: '18px',
         },
+        "xs-12-medium": {
+            fontFamily: "RobotoMedium",
+            fontWeight: 500,
+            fontSize: "12px",
+          },
     },
     components: {
         MuiCard: {
