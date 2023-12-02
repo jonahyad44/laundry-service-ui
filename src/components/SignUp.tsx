@@ -24,31 +24,21 @@ export default function SignUp() {
 
   const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const formData = {
-      username: username,
-      password: password,
-    };
-
-    try {
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({username, password}),
       });
 
-      if (response.ok) {
-        console.log("Registration successful");
+      if (response.status === 201) {
+        alert("Registration successful");
         navigate("/SignIn");
       } else {
-        console.error("Registration failed");
+        alert("Registration failed");
       }
-    } catch (error) {
-      console.error("Error during registration:", error);
-    }
-    
+
   };
 
 

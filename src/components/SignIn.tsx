@@ -27,31 +27,22 @@ export default function SignIn() {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const formData = {
-      username: username,
-      password: password,
-    };
-
-    try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({username, password}),
       });
-
-      if (response.ok) {
-        console.log("Login successful");
-        navigate("/Admin");
+      if (response.status !== 201) {
+        alert("Incorrect credentials");
       } else {
-        console.error("Login failed");
+        const token = await response.json();
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", username);
+        navigate("/Admin");
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
-    
-  }
+  };
 
   
 
