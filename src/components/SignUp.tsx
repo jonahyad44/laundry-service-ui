@@ -118,7 +118,7 @@ export default function SignUp() {
                             </CardContent>
                             </Stack>
 
-                            <Stack spacing={2}>
+                            <Stack spacing={3}>
                               <CardContent component='span'
                                 sx={{
                                   width: '229px',
@@ -142,8 +142,8 @@ export default function SignUp() {
                                       <Typography
                                       sx={{
                                         fontStyle: 'normal',
-                                        lineHeight: '40px',
-                                        fontSize: '25px',
+                                        lineHeight: '20px',
+                                        fontSize: '15px',
                                         color: '#000',
                                         fontFamily: 'Noto Sans JP, Sans-Serif',
                                         fontWeight: 400,
