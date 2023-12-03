@@ -3,62 +3,44 @@ import express, { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import bodyParser from 'body-parser';
-import axios from "axios";
-const stripe = require('stripe')('sk_test_51ODvYwDEtVoGXwUaSYKqzFhtt9WYjxTh3D3kJtxMGkWvZGeEni0VDmgAXkiG28VRCcMlqEnCRwB9CqcgbDE2bURW00JW1Wkp5g');
+import { json } from 'body-parser';
+import Stripe from 'stripe';
+import { env } from "node:process";
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const port = 3000;
 
 const prisma = new PrismaClient();
 const app = express();
-const STRIPE_SECRET_KEY = 'sk_test_51ODvYwDEtVoGXwUaSYKqzFhtt9WYjxTh3D3kJtxMGkWvZGeEni0VDmgAXkiG28VRCcMlqEnCRwB9CqcgbDE2bURW00JW1Wkp5g';
+const stripe = new Stripe('sk_test_51ODvYwDEtVoGXwUaSYKqzFhtt9WYjxTh3D3kJtxMGkWvZGeEni0VDmgAXkiG28VRCcMlqEnCRwB9CqcgbDE2bURW00JW1Wkp5g', {
+  apiVersion: '2023-10-16', // Use the latest API version
+});
 
 app.use(express.json());
+app.use(json());
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser());
 
 interface AuthenticatedRequest extends Request {
   user: { username: string; password: string }; 
 }
 
-app.post("/charge", async (req, res) => {
-  try {
-      const { amount, token } = req.body;
-      const charge = await stripe.charges.create({
-          amount,
-          currency: 'usd',
-          source: token,
-        });
-    
-        // Handle successful payment (e.g., update database, send confirmation email)
-        // Send a success response to the client
-        res.status(200).json({ success: true });
-      } catch (error) {
-        console.error(error.message);
-        // Handle errors and send a failure response to the client
-        res.status(500).json({ error: 'Payment failed' });
-      }
-    });
 
-    app.get('/api/orders', async (req, res) => {
+    app.get("/api/orders", async (req, res) => {
       try {
-        const response = await axios.get('https://api.stripe.com/v1/orders', {
-          headers: {
-            Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-    
-        const orders = response.data.data;
-        res.json({ orders });
+        const orders = await stripe.issuing.transactions.list();
+        res.json(orders.data);
+        console.log(req.body);
       } catch (error) {
-        console.error('Error retrieving orders:', error.response.data.error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error retriveing orders:", error);
+        res.status(500).json({ error: 'Server error' });
       }
     });
 
 
-app.post("/signup", async (req, res) => {
+app.post("/api/register", async (req, res) => {
     try {
       const username = req.body.username;
       console.log("Username Recieved");
@@ -76,17 +58,23 @@ app.post("/signup", async (req, res) => {
     }
   });
 
-  app.post("/checkToken", (req, res) => {
-    const { token } = req.body;
-    if (token === 'valid_token') {
-      res.status(200).json({ valid: true, message: 'Token is valid' });
+  app.post("/api/checkToken", (req: Request, res: Response) => {
+    const token = req.body.token;
+    if (token) {
+      jwt.verify(token, env.JWT_SECRET_KEY, (err: Error, user: string) => {
+        if (err) {
+          res.sendStatus(403);
+        } else {
+          res.status(200).json(user);
+        }
+      });
     } else {
-      res.status(401).json({ valid: false, message: 'Token is invalid' });
+      res.sendStatus(401);
     }
   });
 
 
-app.post("/contactform", async (req, res) => {
+app.post("/api/contactform", async (req, res) => {
   const {name, email, message} = req.body;
   if(!name) {
     return res.status(400).send("name required");
@@ -107,7 +95,7 @@ app.post("/contactform", async (req, res) => {
 
 
 
-  app.post("/login", async (req: Request, res: Response) => {
+  app.post("/api/login", async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = await prisma.admin.findFirst({
       where: { username: username },
