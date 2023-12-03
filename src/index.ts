@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 import bcrypt from "bcrypt";
-const cors = require("cors");
+import cors from 'cors';
 import { json } from 'body-parser';
 import Stripe from 'stripe';
 import { env } from "node:process";
 import { PrismaClient } from "@prisma/client";
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
 const prisma = new PrismaClient();
@@ -22,7 +22,6 @@ app.use(json());
 app.use(express.json());
 app.use(express.static('public'));
 app.use(cors());
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}))
 
@@ -117,12 +116,22 @@ app.post("/api/register", async (req, res) => {
           res.status(500).json({ error: 'Server error' });
         }
       });
+
+      module.exports = function(app) {
+        app.use(
+          "/api",
+          createProxyMiddleware({
+            target: "http://localhost:8080",
+            changeOrigin: true,
+          })
+        );
+      };
          
 
        
     
-app.listen(3001, () => {
-    console.log("Server ready at http://localhost:3001");
+app.listen(8080, () => {
+    console.log("Server ready at http://localhost:8080");
 });
 
 module.exports = app;
