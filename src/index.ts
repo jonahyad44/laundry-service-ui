@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import cors from 'cors';
+const cors = require("cors");
 import { json } from 'body-parser';
 import Stripe from 'stripe';
 import { env } from "node:process";
