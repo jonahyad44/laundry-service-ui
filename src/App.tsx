@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './components/HomePage';
-import SignIn from './pages/Login/SignIn';
-import SignUp from './pages/SignUp';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import Contact from './components/Contact';
 import Pricing from './components/Pricing';
 import OrderForm from './components/OrderForm';
 import AboutUs from './components/AboutUs';
-import Admin from './pages/Admin';
+import Admin from './components/Admin';
 import "./themes/fonts.css";
 import ShoppingCart from './components/ShoppingCart';
 import { loadStripe } from '@stripe/stripe-js';

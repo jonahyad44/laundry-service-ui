@@ -140,7 +140,7 @@ export default function Pricing() {
                             type="submit"
                             variant="contained"
                             sx={{
-                                width: '147px',
+                                width: '135px',
                                 height: '73px',
                                 flexShrink: 0,
                                 backgroundColor: '#FFFFFF',
@@ -167,7 +167,7 @@ export default function Pricing() {
                             type="submit"
                             variant="contained"
                             sx={{
-                                width: '147px',
+                                width: '130px',
                                 height: '73px',
                                 flexShrink: 0,
                                 backgroundColor: '#F02C2C',

@@ -162,7 +162,7 @@ export default function Contact() {
                             type="submit"
                             variant="contained"
                             sx={{
-                                width: '147px',
+                                width: '135px',
                                 height: '73px',
                                 flexShrink: 0,
                                 backgroundColor: '#FFFFFF',
@@ -189,7 +189,7 @@ export default function Contact() {
                             type="submit"
                             variant="contained"
                             sx={{
-                                width: '147px',
+                                width: '130px',
                                 height: '73px',
                                 flexShrink: 0,
                                 backgroundColor: '#F02C2C',
@@ -322,7 +322,7 @@ export default function Contact() {
                                             fontSize: '36px',
                                             fontStyle: 'normal',
                                             fontWeight: 400,
-                                            lineHeight: 'normal',
+                                            lineHeight: '75px',
                                             color: '#000',
                                             fontFamily: 'Noto Sans JP, Sans-Serif',
                                             }}>
@@ -386,7 +386,7 @@ export default function Contact() {
                                         color: '#000',
                                         fontFamily: 'Noto Sans JP, Sans-Serif',
                                         fontWeight: 400,
-                                        lineHeight: '70px',
+                                        lineHeight: '150px',
                                       }}>
                                         Message
                                       </Typography>
