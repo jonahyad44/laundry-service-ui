@@ -9,7 +9,7 @@ import { env } from "node:process";
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
-const port = 5173;
+const port = 3000;
 
 const prisma = new PrismaClient();
 const app = express();
