@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Orders {
+interface Order {
   id: string;
   amount: string;
 }
 
 
 export default function Orders() {
-  const [orders, setOrders] = useState<Orders[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
