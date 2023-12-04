@@ -37,9 +37,6 @@ export default function SignIn() {
       if (response.status !== 201) {
         alert("Incorrect credentials");
       } else {
-        const token = await response.json();
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", username);
         alert("Login successful!");
         navigate("/Admin");
       }

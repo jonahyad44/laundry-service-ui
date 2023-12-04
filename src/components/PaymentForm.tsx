@@ -29,12 +29,13 @@ export default function PaymentForm() {
         setError(error.message || 'An error occurred while processing your payment.');
       } else {
         // Payment method created successfully
-        console.log('PaymentMethod:', paymentMethod);
+        console.log('Payment succeeded:', paymentMethod);
         navigate("/Admin");
         // Handle the successful payment method creation, e.g., send to server
       }
     } catch (error) {
       // Handle other errors that may occur during the API request
+      console.error('Error confirming PaymentIntent:', error.message);
       setError('An error occurred while processing your payment.');
     }
 
