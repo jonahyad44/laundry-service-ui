@@ -39,6 +39,24 @@ interface AuthenticatedRequest extends Request {
       }
     });
 
+    app.post('/create-payment-intent', async (req: Request, res: Response) => {
+      try {
+        const { amount, currency } = req.body;
+    
+        // Create a PaymentIntent on the server side
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency,
+        });
+    
+        // Send the client secret to the client
+        res.json({ clientSecret: paymentIntent.client_secret });
+      } catch (error) {
+        console.error('Error creating Payment Intent:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+
 
 app.post("/api/register", async (req, res) => {
     try {
