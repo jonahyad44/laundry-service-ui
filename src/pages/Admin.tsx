@@ -26,7 +26,7 @@ export default function Admin() {
               const resJson = await response.json();
               setAdmin(resJson);
             } else {
-              navigate("/SignIn");
+              navigate("/");
             }
           }
           authenticate();
