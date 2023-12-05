@@ -35,7 +35,7 @@ export default function PaymentForm() {
       }
     } catch (error) {
       // Handle other errors that may occur during the API request
-      console.error('Error confirming PaymentIntent:', error.message);
+      console.error('Error confirming PaymentIntent:', error);
       setError('An error occurred while processing your payment.');
     }
 
