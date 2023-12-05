@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 interface Order {
   id: string;
@@ -14,14 +13,16 @@ export default function Orders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/orders");
-        setOrders(response.data.data);
+        const response = await fetch("/api/orders"); 
+        const data = await response.json();
+        setOrders(data);
       } catch (error) {
         console.error('Error fetching orders:', error);
       } finally {
         setLoading(false);
       }
     };
+
 
     fetchOrders();
   }, []);
